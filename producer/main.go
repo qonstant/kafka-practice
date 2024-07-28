@@ -41,48 +41,25 @@ func (op *OrderPlacer) placeOrder(orderType string, size int) error {
 	}
 
 	<-op.deliveryChan
+
+	fmt.Printf("Placed order on the queue: %s\n", format)
 	return nil
 }
 
 func main() {
 	p, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers": "localhost:9092",
-		"client.id":         "foo",
+		"client.id":         "Nothing",
 		"acks":              "all",
 	})
 
 	if err != nil {
 		fmt.Printf("Failed to create producer: %s\n", err)
 	}
-	topic := "HVSE"
-
-	go func() {
-		consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-			"bootstrap.servers": "localhost:9092",
-			"group.id":          "foo",
-			"auto.offset.reset": "smallest",
-		})
-		if err != nil {
-			log.Fatal(err)
-		}
-		err = consumer.Subscribe(topic, nil)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		for {
-			ev := consumer.Poll(100)
-			switch e := ev.(type) {
-			case *kafka.Message:
-				fmt.Printf("Consumed message from the queue: %s\n", string(e.Value))
-			case *kafka.Error:
-				fmt.Printf("%s\n", e)
-			}
-		}
-	}()
 
 	op := NewOrderPlacer(p, "HVSE")
 	for i := 0; i < 1000; i++ {
+		fmt.Printf("produced: %d \n", i + 1)
 		if err := op.placeOrder("something", i + 1); err != nil {
 			log.Fatal(err)
 		}
