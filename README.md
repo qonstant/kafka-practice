@@ -95,6 +95,7 @@ func main() {
 }
 
 The `producer/main.go` file contains the code for producing messages to a Kafka topic.
+```
 
 ### Code
 
