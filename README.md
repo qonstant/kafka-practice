@@ -149,7 +149,7 @@ func main() {
 
 ## Consumer (Nothing Group)
 
-The consumer2/main.go file contains the code for consuming messages from a Kafka topic by the Nothing Group.
+The `consumer2/main.go` file contains the code for consuming messages from a Kafka topic by the Nothing Group.
 
 ### Code
 
