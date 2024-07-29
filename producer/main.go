@@ -59,7 +59,6 @@ func main() {
 
 	op := NewOrderPlacer(p, "HVSE")
 	for i := 0; i < 1000; i++ {
-		fmt.Printf("produced: %d \n", i + 1)
 		if err := op.placeOrder("something", i + 1); err != nil {
 			log.Fatal(err)
 		}

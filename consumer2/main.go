@@ -11,10 +11,12 @@ func main() {
 	topic := "HVSE"
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:9092",
-		"group.id":          "Nothing",
-		"auto.offset.reset": "smallest",
-	})
+		"bootstrap.servers":  "localhost:9092",
+		"group.id":           "Nothing",
+		"auto.offset.reset":  "smallest",
+		"enable.auto.commit": "true",
+		"auto.commit.interval.ms": "1000",
+	})	
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -27,7 +29,11 @@ func main() {
 		ev := consumer.Poll(100)
 		switch e := ev.(type) {
 		case *kafka.Message:
-			fmt.Printf("Processed order: %s\n", string(e.Value))
+			fmt.Printf("Consumed order by Nothing: %s\n", string(e.Value))
+			_, err := consumer.CommitMessage(e)
+			if err != nil {
+				log.Printf("Failed to commit message: %s\n", err)
+			}
 		case *kafka.Error:
 			fmt.Printf("%s\n", e)
 		}
